@@ -2,19 +2,22 @@ contract Ride {
     address public driver;
     
     mapping(address=>bool) isPassenger;
+    address[2] public passengers;
+    
+    uint nbPassengers;
+
     mapping(address=>uint) allowance;
     
     uint public from;
     uint public to;
-    uint nbPassengers;
-    
+
+    // times
     uint public estimatedArrival;
-    
+
     uint MAX_PASSENGERS = 2;
-    uint DRIVER_COMMITMENT = 1 ether;
     uint PASSENGER_COMMITMENT = 1 ether;
 
-    enum State {Joining, Full, Driving, Closed}
+    enum State {Joining, Full, Driving, ChallengeAccepted}
     
     State state = State.Joining;
     
@@ -29,7 +32,7 @@ contract Ride {
     }
 
     function Ride(uint _from, uint _to, address _driver) {
-        if(msg.value != DRIVER_COMMITMENT) throw;
+        if(msg.value != 1 ether) throw;
         driver = _driver;
         from = _from;
         to = _to;
@@ -39,8 +42,9 @@ contract Ride {
         if(msg.value != PASSENGER_COMMITMENT) throw;
         if(isPassenger[msg.sender]) throw;
         isPassenger[msg.sender] = true;
+        passengers[nbPassengers] = msg.sender;
         nbPassengers++;
-        if(nbPassengers == MAX_PASSENGERS) {
+        if(passengers.length == MAX_PASSENGERS) {
             state = State.Full;
         }
     }
@@ -51,11 +55,12 @@ contract Ride {
     }
     
     function acceptChallenge() internal {
-        // ??
-    }
-    
-    function refuseChallenge() internal {
-        // ??
+        // reallocate funds
+        for(uint i = 0; i < passengers.length; i++) {
+            allowance[passengers[i]] += allowance[driver]/passengers.length;
+        }
+        allowance[driver] = 0;
+        state = State.ChallengeAccepted;
     }
     
     function challenge(uint position) onlyPassengers() inState(State.Driving) {
@@ -63,8 +68,17 @@ contract Ride {
         if(updatedArrival < estimatedArrival) {
             // Challenge successful!
             acceptChallenge();
-        } else {
-            refuseChallenge();
-        }
+        } 
+    }
+    
+    function withdraw() {
+        if(state != State.ChallengeAccepted || now < estimatedArrival) throw;
+        if(allowance[msg.sender] > 0) {
+            uint withdrawAmount = allowance[msg.sender];
+            allowance[msg.sender] = 0;
+            if(!msg.sender.send(withdrawAmount)) {
+                allowance[msg.sender] = withdrawAmount;
+            }
+        } 
     }
 }
