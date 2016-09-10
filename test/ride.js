@@ -7,8 +7,16 @@ contract('Ride', function(accounts) {
   var bob = accounts[3]
 
   it("should create a ride from A to B", function() {
-    return Ride.new(12,15,driver, {from: factory}).then(ride => {
-      console.log(ride)
+    return Ride.new(12, 15, driver, {
+      from: factory,
+      value: web3.toWei(1, 'ether')
+    }).then(ride => {
+      return ride.from().then(f => {
+        assert.equal(f.toNumber(), 12)
+        return ride.to()
+      }).then(t => {
+        assert.equal(t.toNumber(), 15)
+      })
     })
   });
 });
