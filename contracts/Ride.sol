@@ -76,7 +76,9 @@ contract Ride {
         if(allowance[msg.sender] > 0) {
             uint withdrawAmount = allowance[msg.sender];
             allowance[msg.sender] = 0;
-            msg.sender.send(withdrawAmount);
+            if(!msg.sender.send(withdrawAmount)) {
+                allowance[msg.sender] = withdrawAmount;
+            }
         } 
     }
 }
