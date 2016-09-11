@@ -27,9 +27,17 @@ function newRide() {
 }
 
 
+function joinRide() {
+  
+ 
 
+  
 
+}
 
+function startJourney() {
+
+}
   
   
   }).catch(function(e) {
