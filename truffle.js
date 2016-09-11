@@ -2,7 +2,9 @@ module.exports = {
   build: {
     "index.html": "index.html",
     "app.js": [
-      "javascripts/app.js"
+//	"javascripts/web3.min.js",
+	"javascripts/jquery.min.js",
+	"javascripts/app.js"
     ],
     "app.css": [
       "stylesheets/app.css"
