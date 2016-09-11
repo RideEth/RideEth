@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+=======
+var FactoryContractAddr = '0xc020881042c2197998c33bc886d2810000e99320';
+var meta = RideFactory.at(FactoryContractAddr);
+//var meta = RideFactory.deployed();
+console.log(meta)
+
+
+
+>>>>>>> 1ca9d031511fca6c9f64eb7819d16d6cf58e976a
 function setStatus(message) {
   var status = document.getElementById("status");
   status.innerHTML = message;
@@ -7,11 +17,14 @@ function setStatus(message) {
 
 function newRide() {
   
+<<<<<<< HEAD
   var meta = RideFactory.deployed();
 //  var meta = RideFactory.at(FactoryContractAddr);
+=======
+>>>>>>> 1ca9d031511fca6c9f64eb7819d16d6cf58e976a
 
   var startPoint = parseInt(document.getElementById("journeyFrom").value);
-  var endPoint = parseInt(document.getElementByID("journeyTo").value);
+  var endPoint = parseInt(document.getElementById("journeyTo").value);
 
   if (startPoint.length == 0 || endPoint.length == 0) {
 
@@ -19,13 +32,17 @@ function newRide() {
     return;
   }
 
-  meta.newRide(startPoint, endPoint);
+  meta.NewRide().watch((err, res) => {
+    console.log(err,res)
+  })
 
-	var qrcodeElem = document.getElementById("qrcode");
-	var qrcode = new QRCode(qrcodeElem, { width : 100, height : 100 });
-	rideContractAddr = web3;
-	qrcode.makeCode(rideContractAddr);
-	qrcodeElem.setAttribute('hidden', 'false')
+ //  meta.newRide(startPoint, endPoint, {from: account});
+
+	// var qrcodeElem = document.getElementById("qrcode");
+	// var qrcode = new QRCode(qrcodeElem, { width : 100, height : 100 });
+	// rideContractAddr = web3;
+	// qrcode.makeCode(rideContractAddr);
+	// qrcodeElem.setAttribute('hidden', 'false')
 	
 	
 }
