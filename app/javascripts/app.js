@@ -29,10 +29,6 @@ function newRide() {
 
 function joinRide() {
   
- 
-
-  
-
 }
 
 function startJourney() {
@@ -48,13 +44,6 @@ function challengeSafety() {
 function withdrawFunds() {
 
 }
-  
-  
-  }).catch(function(e) {
-    console.log(e);
-    setStatus("Error; see log.");
-  });
-};
 
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
