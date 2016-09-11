@@ -38,6 +38,16 @@ function joinRide() {
 function startJourney() {
 
 }
+
+
+function challengeSafety() {
+
+
+}
+
+function withdrawFunds() {
+
+}
   
   
   }).catch(function(e) {
