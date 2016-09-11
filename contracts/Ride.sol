@@ -1,4 +1,6 @@
-contract Ride {
+import "usingOraclize.sol";
+
+contract Ride is usingOraclize {
     address public driver;
     
     mapping(address=>bool) isPassenger;
@@ -6,7 +8,11 @@ contract Ride {
     
     uint nbPassengers;
 
-    mapping(address=>uint) allowance;
+    string public rslt;
+
+    bytes32 public initialRequestId;
+
+    mapping(address=>uint) public allowance;
     
     uint public from;
     uint public to;
@@ -15,11 +21,12 @@ contract Ride {
     uint public estimatedArrival;
 
     uint MAX_PASSENGERS = 2;
-    uint PASSENGER_COMMITMENT = 1 ether;
+    uint PASSENGER_COMMITMENT = 2 ether;
+    uint DRIVER_COMMITMENT = 2 ether;
 
     enum State {Joining, Full, Driving, ChallengeAccepted}
     
-    State state = State.Joining;
+    State public state = State.Joining;
     
     modifier inState(State _state) {
         if(state != _state) throw;
@@ -27,12 +34,13 @@ contract Ride {
     }
     
     modifier onlyPassengers() {
-        if(!isPassenger[msg.sender])
+        if(!isPassenger[msg.sender]) throw;
         _
     }
 
     function Ride(uint _from, uint _to, address _driver) {
-        if(msg.value != 1 ether) throw;
+        if(msg.value != DRIVER_COMMITMENT) throw;
+        //oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
         driver = _driver;
         from = _from;
         to = _to;
@@ -43,32 +51,32 @@ contract Ride {
         if(isPassenger[msg.sender]) throw;
         isPassenger[msg.sender] = true;
         passengers[nbPassengers] = msg.sender;
+        allowance[msg.sender] = msg.value;
         nbPassengers++;
-        if(passengers.length == MAX_PASSENGERS) {
+        if(nbPassengers == MAX_PASSENGERS) {
             state = State.Full;
         }
     }
     
-    function startRide(uint position) inState(State.Full) {
-        state = State.Driving;
-        estimatedArrival = now + 6 hours; // to be set asynchronously by oraclize
-    }
-    
     function acceptChallenge() internal {
         // reallocate funds
-        for(uint i = 0; i < passengers.length; i++) {
-            allowance[passengers[i]] += allowance[driver]/passengers.length;
+        for(uint i = 0; i < nbPassengers; i++) {
+            allowance[passengers[i]] += allowance[driver] / nbPassengers;
         }
         allowance[driver] = 0;
         state = State.ChallengeAccepted;
     }
+
+    function startRide(uint position) inState(State.Full) {
+        initialRequestId = oraclize_query(0, "URL", "json(http://mockbin.org/bin/34ba6dec-5c62-4f4e-a273-526f78d17455).arrival", 1000000);
+    }
     
     function challenge(uint position) onlyPassengers() inState(State.Driving) {
-        uint updatedArrival = now + 1 hours;
-        if(updatedArrival < estimatedArrival) {
-            // Challenge successful!
-            acceptChallenge();
-        } 
+        oraclize_query("URL", "json(http://mockbin.org/bin/e769b929-cf8a-42bd-a850-9e8fd34cfd51).arrival");  
+    }
+
+    function __callback(bytes32 myid, string result, bytes proof) {
+        rslt = "heeyyyy";
     }
     
     function withdraw() {
