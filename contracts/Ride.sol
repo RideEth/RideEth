@@ -25,6 +25,9 @@ contract Ride is usingOraclize {
     uint DRIVER_COMMITMENT = 2 ether;
 
     enum State {Joining, Full, Driving, ChallengeAccepted}
+
+    event StartRideCallback();
+    event ChallengeCallback();
     
     State public state = State.Joining;
     
@@ -40,7 +43,6 @@ contract Ride is usingOraclize {
 
     function Ride(uint _from, uint _to, address _driver) {
         if(msg.value != DRIVER_COMMITMENT) throw;
-        //oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
         driver = _driver;
         from = _from;
         to = _to;
@@ -68,15 +70,28 @@ contract Ride is usingOraclize {
     }
 
     function startRide(uint position) inState(State.Full) {
-        initialRequestId = oraclize_query(0, "URL", "json(http://mockbin.org/bin/34ba6dec-5c62-4f4e-a273-526f78d17455).arrival", 1000000);
+        initialRequestId = oraclize_query(0, "URL", "json(https://mockbin.org/bin/34ba6dec-5c62-4f4e-a273-526f78d17455).arrival");
     }
     
     function challenge(uint position) onlyPassengers() inState(State.Driving) {
-        oraclize_query("URL", "json(http://mockbin.org/bin/e769b929-cf8a-42bd-a850-9e8fd34cfd51).arrival");  
+        oraclize_query("URL", "json(https://mockbin.org/bin/e769b929-cf8a-42bd-a850-9e8fd34cfd51).arrival");  
     }
 
-    function __callback(bytes32 myid, string result, bytes proof) {
-        rslt = "heeyyyy";
+    function __callback(bytes32 myid, string result) {
+        if (msg.sender != oraclize_cbAddress()) throw;
+        rslt = "heyyyy";
+        if(myid == initialRequestId) {
+            StartRideCallback();
+            state = State.Driving;
+            estimatedArrival = parseInt(result); // save it as $ cents
+        } else {
+            ChallengeCallback();
+            uint updatedArrival = parseInt(result);
+            if(updatedArrival < estimatedArrival) {
+                // Challenge successful!
+                acceptChallenge();
+            } 
+        }    
     }
     
     function withdraw() {
