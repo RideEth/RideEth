@@ -16,8 +16,9 @@ contract MyContract {
     if (!Entitlement(getEntitlement()).isEntitled(msg.sender)) throw;
     _;
   }
+}
 
-  // RideEth Factory can only be used by entitled users!
+  // Your implementation goes here
   
   import "Ride.sol"; //here goes the git repo
 
@@ -28,6 +29,3 @@ contract RideFactory {
         rides.push((new Ride).value(msg.value)(_from, _to, msg.sender));
     }
 }
-
-}
-    
