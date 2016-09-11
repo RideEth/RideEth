@@ -1,4 +1,4 @@
-var qrcode = new QRCode("qrcode");
+var FactoryContractAddr = '';
 
 function setStatus(message) {
   var status = document.getElementById("status");
@@ -9,7 +9,8 @@ function setStatus(message) {
 
 function newRide() {
   
-  var meta = RideFactory.deployed();
+//  var meta = RideFactory.deployed();
+  var meta = RideFactory.at(FactoryContractAddr);
 
   var startPoint = parseInt(document.getElementById("journeyFrom").value);
   var endPoint = parseInt(document.getElementByID("journeyTo").value);
@@ -22,8 +23,13 @@ function newRide() {
 
   meta.newRide(startPoint, endPoint);
 
-  
-
+	var qrcodeElem = document.getElementById("qrcode");
+	var qrcode = new QRCode(qrcodeElem, { width : 100, height : 100 });
+	rideContractAddr = web3;
+	qrcode.makeCode(rideContractAddr);
+	qrcodeElem.setAttribute('hidden', 'false')
+	
+	
 }
 
 
