@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RideEth DApp</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: cyan;
+    }
+    .section {
+      margin: 20px;
+    }
+    button {
+      padding: 5px 16px;
+      border-radius: 4px;
+    }
+    button#changeQuota { background-color: yellow; }
+    button#buyTicket { background-color: #98fb98; }
+    button#refundTicket { background-color: pink; }
+    button#createWallet { background-color: #add8e6; }
+    #seed {color: green;}
+
+    #qrcode {
+      width:160px;
+      height:160px;
+      margin-top:15px;
+    }
+    
+  </style>
+
+  <script type="text/javascript" src="qr/jquery.min.js"></script>
+
+  
+</head>
+<body>
+  <h1>RideEth DApp</h1>
+  <div class="section">
+  <body>
+Journey #47
+<br><br>
+Add your insurance tip and click button to join this ride!
+<br><br>
+   From: <input type="text" id="tip" />
+  </div>
+  <div class="section">
+    <button id="joinTheRide" onclick="joinRide()">JOIN RIDE</button>
+  </div>
+
+<br>
+
+
+</body> 
+</html> 

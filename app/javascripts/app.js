@@ -1,37 +1,48 @@
-var accounts;
-var account;
+var qrcode = new QRCode("qrcode");
 
 function setStatus(message) {
   var status = document.getElementById("status");
   status.innerHTML = message;
 };
 
-function refreshBalance() {
-  var meta = MetaCoin.deployed();
 
-  meta.getBalance.call(account, {from: account}).then(function(value) {
-    var balance_element = document.getElementById("balance");
-    balance_element.innerHTML = value.valueOf();
+
+function newRide() {
+  
+  var meta = RideFactory.deployed();
+
+  var startPoint = parseInt(document.getElementById("journeyFrom").value);
+  var endPoint = parseInt(document.getElementByID("journeyTo").value);
+
+  if (startPoint.length == 0 || endPoint.length == 0) {
+
+    alert("Please ensure that your start and end locations are properly populated");
+    return;
+  }
+
+  meta.newRide(startPoint, endPoint);
+
+  
+
+}
+
+
+function joinRide() {
+  
+ 
+
+  
+
+}
+
+function startJourney() {
+
+}
+  
+  
   }).catch(function(e) {
     console.log(e);
-    setStatus("Error getting balance; see log.");
-  });
-};
-
-function sendCoin() {
-  var meta = MetaCoin.deployed();
-
-  var amount = parseInt(document.getElementById("amount").value);
-  var receiver = document.getElementById("receiver").value;
-
-  setStatus("Initiating transaction... (please wait)");
-
-  meta.sendCoin(receiver, amount, {from: account}).then(function() {
-    setStatus("Transaction complete!");
-    refreshBalance();
-  }).catch(function(e) {
-    console.log(e);
-    setStatus("Error sending coin; see log.");
+    setStatus("Error; see log.");
   });
 };
 
@@ -50,6 +61,6 @@ window.onload = function() {
     accounts = accs;
     account = accounts[0];
 
-    refreshBalance();
+
   });
 }
