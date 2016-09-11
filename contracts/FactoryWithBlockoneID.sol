@@ -1,7 +1,13 @@
 contract EntitlementRegistry{function get(string _name)constant returns(address );function getOrThrow(string _name)constant returns(address );}
 contract Entitlement{function isEntitled(address _address)constant returns(bool );}
 
-contract MyContract {
+
+  // Your implementation goes here
+  
+  import "Ride.sol"; //here goes the git repo
+
+contract RideFactory {
+    
 
   // BlockOne ID bindings
 
@@ -16,16 +22,15 @@ contract MyContract {
     if (!Entitlement(getEntitlement()).isEntitled(msg.sender)) throw;
     _;
   }
-}
 
-  // Your implementation goes here
-  
-  import "Ride.sol"; //here goes the git repo
-
-contract RideFactory {
     address[] public rides;
     
     function newRide(uint _from, uint _to) entitledUsersOnly {
         rides.push((new Ride).value(msg.value)(_from, _to, msg.sender));
     }
+    
+
 }
+
+
+    
