@@ -4,7 +4,7 @@ contract Entitlement{function isEntitled(address _address)constant returns(bool 
 
   // Your implementation goes here
   
-  import "Ride.sol"; //here goes the git repo
+  import "https://github.com/RideEth/RideEth/blob/master/contracts/Ride.sol; //here goes the git repo
 
 contract RideFactory {
     
