@@ -1,5 +1,3 @@
-var FactoryContractAddr = '';
-
 function setStatus(message) {
   var status = document.getElementById("status");
   status.innerHTML = message;
@@ -9,8 +7,8 @@ function setStatus(message) {
 
 function newRide() {
   
-//  var meta = RideFactory.deployed();
-  var meta = RideFactory.at(FactoryContractAddr);
+  var meta = RideFactory.deployed();
+//  var meta = RideFactory.at(FactoryContractAddr);
 
   var startPoint = parseInt(document.getElementById("journeyFrom").value);
   var endPoint = parseInt(document.getElementByID("journeyTo").value);

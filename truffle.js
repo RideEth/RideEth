@@ -4,6 +4,7 @@ module.exports = {
     "app.js": [
 //	"javascripts/web3.min.js",
 	"javascripts/jquery.min.js",
+	"javascripts/qrcode.min.js",
 	"javascripts/app.js"
     ],
     "app.css": [
